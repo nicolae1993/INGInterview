@@ -30,7 +30,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="page-header clearfix">
-                        <h2 class="pull-left">Employees Details</h2>
+                        <h2 class="pull-left">ING Employees Details</h2>
+
+                          
+  
+                             <p>
+                               Server IP: <?php echo $_SERVER['SERVER_ADDR']; ?>
+                             </p>
+
+
                         <a href="create.php" class="btn btn-success pull-right">Add New Employee</a>
                     </div>
                     <?php
