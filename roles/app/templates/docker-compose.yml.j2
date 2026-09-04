@@ -9,23 +9,9 @@ services:
     build: './apache/'
     depends_on:
       - php
-      - mysql
     ports:
-      - "8080:80"
+      - "{{web_port}}:80"
     volumes:
       - ./public:/var/www/html/
 
-  mysql:
-    image: mysql:5.7
-    restart: always
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./public/dump:/docker-entrypoint-initdb.d/
-    environment:
-      MYSQL_ROOT_PASSWORD: "{{ vault_mysql_root_password }}"
-      MYSQL_DATABASE: "{{ mysql_database }}"
-      MYSQL_USER: "{{ mysql_user }}"
-      MYSQL_PASSWORD: "{{ vault_mysql_password }}"
 
-volumes:
-  db_data:
