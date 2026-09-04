@@ -1,0 +1,11 @@
+---
+- name: Configure database server
+  hosts: databases
+  become: true
+
+  vars_files:
+    - /home/ubuntu/ansible-project/group_vars/databases.yml
+    - /home/ubuntu/ansible-project/group_vars/all/vault.yml
+
+  roles:
+    - database

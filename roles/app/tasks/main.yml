@@ -1,0 +1,29 @@
+---
+- name: Create application directory
+  ansible.builtin.file:
+    ## spune unde sa creeze directorul in functie de variabila setata| exemplu app_directory: /opt/myapp 
+     ##declarat aici group_vars/all.yml:app_directory: "/opt/php-app"- name: Copy application
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../docker-project/"
+    dest: "{{ app_directory }}/"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0755"
+
+- name: Copy application
+  ansible.builtin.copy:
+    ## playbook_dir este variabila speciala care nu este declarata si spune unde este directorul de ansible
+    src: "{{ playbook_dir }}/../docker-project/"
+    dest: "{{ app_directory }}/"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0644"
+
+
+- name: Deploy docker compose
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ app_directory }}/docker-compose.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0600"
