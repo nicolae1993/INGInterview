@@ -29,7 +29,7 @@
     dest: "{{ app_directory }}/public/config.php"
     owner: ubuntu
     group: ubuntu
-    mode: "0640"
+    mode: "0644"
 
 - name: Start application
   community.docker.docker_compose_v2:
