@@ -22,9 +22,14 @@
     mode: "0644"
   notify: Restart MySQL
 
-- name: Create application database
-  community.mysql.mysql_db:
-    name: "{{ mysql_database }}"
+- name: Create application user
+  community.mysql.mysql_user:
+    name: "{{ mysql_user }}"
+    plugin: caching_sha2_password
+    plugin_auth_string: "{{ vault_mysql_password }}"
+    salt: "1234567890abcdefghij"
+    priv: "{{ mysql_database }}.*:ALL"
+    host: "%"
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
 
