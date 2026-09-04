@@ -1,18 +1,26 @@
 ---
-- name: Install MySQL
+- name: Install MySQL server
   ansible.builtin.apt:
     name:
       - mysql-server
       - python3-pymysql
     state: present
     update_cache: true
-    cache_valid_time: 86400
 
 - name: Start MySQL
   ansible.builtin.service:
     name: mysql
     state: started
     enabled: true
+
+- name: Configure MySQL
+  ansible.builtin.template:
+    src: mysqld.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart MySQL
 
 - name: Create application database
   community.mysql.mysql_db:
@@ -23,20 +31,42 @@
 - name: Create application user
   community.mysql.mysql_user:
     name: "{{ mysql_user }}"
-    plugin: caching_sha2_password
-    plugin_auth_string: "{{ vault_mysql_password }}"
-    salt: "1234567890abcdefghij"
-    priv: "{{ mysql_database }}.*:ALL"
+    password: "{{ vault_mysql_password }}"
     host: "%"
+    priv: "{{ mysql_database }}.*:ALL"
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
+  no_log: true
 
-
-- name: Configure MySQL
-  ansible.builtin.template:
-    src: mysqld.cnf.j2
-    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+- name: Copy database dump
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../docker-project/public/dump/dump.sql"
+    dest: /tmp/dump.sql
     owner: root
     group: root
-    mode: "0644"
-  notify: Restart MySQL
+    mode: "0600"
+
+- name: Check database initialization marker
+  ansible.builtin.stat:
+    path: /var/lib/mysql/.app_initialized
+  register: db_initialized
+
+- name: Import database dump
+  community.mysql.mysql_db:
+    name: "{{ mysql_database }}"
+    state: import
+    target: /tmp/dump.sql
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ vault_mysql_password }}"
+    login_host: "localhost"
+  when: not db_initialized.stat.exists
+  no_log: true
+
+- name: Mark database as initialized
+  ansible.builtin.file:
+    path: /var/lib/mysql/.app_initialized
+    state: touch
+    owner: mysql
+    group: mysql
+    mode: "0600"
+  when: not db_initialized.stat.exists

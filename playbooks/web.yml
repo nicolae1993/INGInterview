@@ -4,7 +4,9 @@
   become: true
 
   vars_files:
+    - ../group_vars/all.yml
     - ../group_vars/all/vault.yml
+    - ../group_vars/webservers.yml
 
   roles:
     - docker

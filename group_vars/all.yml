@@ -2,4 +2,4 @@ app_directory: "/opt/php-app"
 
 mysql_database: "mydb"
 mysql_user: "appuser"
-mysql_host: "db01"
+mysql_host: "172.31.38.250"
