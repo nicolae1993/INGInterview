@@ -33,15 +33,6 @@
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
 
-- name: Create application user
-  community.mysql.mysql_user:
-    name: "{{ mysql_user }}"
-    password: "{{ vault_mysql_password }}"
-    host: "%"
-    priv: "{{ mysql_database }}.*:ALL"
-    state: present
-    login_unix_socket: /run/mysqld/mysqld.sock
-  no_log: true
 
 - name: Copy database dump
   ansible.builtin.copy:
@@ -63,7 +54,7 @@
     target: /tmp/dump.sql
     login_user: "{{ mysql_user }}"
     login_password: "{{ vault_mysql_password }}"
-    login_host: "localhost"
+    login_host: "127.0.0.1"
   when: not db_initialized.stat.exists
   no_log: true
 

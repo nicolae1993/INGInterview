@@ -1,0 +1,15 @@
+---
+- name: Configure database
+  hosts: databases
+  become: true
+
+  roles:
+    - database
+
+- name: Configure webservers
+  hosts: webservers
+  become: true
+
+  roles:
+    - docker
+    - app
