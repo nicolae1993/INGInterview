@@ -23,6 +23,14 @@
     group: ubuntu
     mode: "0600"
 
+
+- name: Build and start Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_directory }}"
+    build: always
+    state: present
+
+
 - name: Deploy PHP database configuration
   ansible.builtin.template:
     src: config.php.j2
@@ -31,8 +39,7 @@
     group: ubuntu
     mode: "0644"
 
-- name: Build and start Docker Compose
+- name: Start application
   community.docker.docker_compose_v2:
     project_src: "{{ app_directory }}"
-    build: always
     state: present
