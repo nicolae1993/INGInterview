@@ -1,0 +1,23 @@
+---
+- name: Application health check
+  hosts: webservers
+  become: true
+
+  tasks:
+
+    - name: Check Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+      check_mode: true
+      register: docker_status
+
+    - name: Check application containers
+      ansible.builtin.command:
+        cmd: docker ps
+      register: containers
+      changed_when: false
+
+    - name: Display running containers
+      ansible.builtin.debug:
+        var: containers.stdout
