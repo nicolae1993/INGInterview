@@ -15,12 +15,12 @@ pipeline {
                     ansible-playbook \
                         -i jenkins/ansible/inventory.ini \
                         --syntax-check \
-                        jenkins/ansible/cicd/deploy.yml
+                        jenkins/ansible/deploy.yml
 
                     ansible-playbook \
                         -i jenkins/ansible/inventory.ini \
                         --syntax-check \
-                        jenkins/ansible/cicd/health-check.yml
+                        jenkins/ansible/health-check.yml
                 '''
             }
         }
@@ -28,8 +28,8 @@ pipeline {
         stage('Ansible Lint') {
             steps {
                 sh '''
-                    ansible-lint jenkins/ansible/cicd/deploy.yml
-                    ansible-lint jenkins/ansible/cicd/health-check.yml
+                    ansible-lint jenkins/ansible/deploy.yml
+                    ansible-lint jenkins/ansible/health-check.yml
                 '''
             }
         }
@@ -53,7 +53,7 @@ pipeline {
                     sh '''
                         ansible-playbook \
                             -i jenkins/ansible/inventory.ini \
-                            jenkins/ansible/cicd/health-check.yml
+                            jenkins/ansible/health-check.yml
                     '''
                 }
             }
