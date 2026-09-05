@@ -2,18 +2,16 @@ services:
 
   php:
     build: './php/'
-    restart: unless-stopped
     volumes:
       - ./public:/var/www/html/
-    environment:
-      SERVER_IP: "{{ ansible_host }}"
 
   apache:
     build: './apache/'
-    restart: unless-stopped
     depends_on:
       - php
     ports:
-      - "{{ web_port }}:80"
+      - "{{web_port}}:80"
     volumes:
       - ./public:/var/www/html/
+
+
