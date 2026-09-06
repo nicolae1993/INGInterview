@@ -34,11 +34,15 @@
 
                           
   
-                             <p>
-                               Server IP: <?php echo $_SERVER['SERVER_ADDR']; ?>
+                             
+                               <p>
+                                   Server: <?php echo getenv('SERVER_NAME'); ?>
+                                    <br>
+                                   Server IP: <?php echo getenv('SERVER_IP'); ?>
+                               </p>
                              </p>
 
-                              <p>
+                              
                                  Hello ING People
                               <p>        
                         <a href="create.php" class="btn btn-success pull-right">Add New Employee</a>

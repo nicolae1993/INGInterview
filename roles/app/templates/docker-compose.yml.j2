@@ -5,7 +5,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./public:/var/www/html/
-    environment:
+    
+  environment:
+      SERVER_NAME: "{{ inventory_hostname }}"
       SERVER_IP: "{{ ansible_host }}"
 
   apache:
