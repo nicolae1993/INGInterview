@@ -56,6 +56,17 @@
   when: not db_initialized.stat.exists
   no_log: true
 
+- name: Verify database
+  ansible.mysql.mysql_query:
+    login_db: "{{ mysql_database }}"
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ vault_mysql_password }}"
+    login_host: "127.0.0.1"
+    query: "SHOW TABLES;"
+  register: database_check
+  when: not db_initialized.stat.exists
+  no_log: true
+
 - name: Mark database as initialized
   ansible.builtin.file:
     path: /var/lib/mysql/.app_initialized
@@ -63,4 +74,6 @@
     owner: mysql
     group: mysql
     mode: "0600"
-  when: not db_initialized.stat.exists
+  when:
+    - not db_initialized.stat.exists
+    - database_check is succeeded
