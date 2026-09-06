@@ -33,14 +33,26 @@ pipeline {
             }
         }
 
-        stage('Ansible Lint') {
-            steps {
-                sh '''
-                    ansible-lint jenkins/ansible/deploy.yml
-                    ansible-lint jenkins/ansible/health-check.yml
-                '''
-            }
+  stage('Ansible Lint') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'ansible-vault-password',
+                variable: 'VAULT_PASSWORD'
+            )
+        ]) {
+            sh '''
+                set +x
+
+                printf '%s\\n' "$VAULT_PASSWORD" > "$WORKSPACE/.vault_pass"
+                chmod 600 "$WORKSPACE/.vault_pass"
+
+                ansible-lint jenkins/ansible/deploy.yml
+                ansible-lint jenkins/ansible/health-check.yml
+            '''
         }
+    }
+}
 
         stage('Ansible Connectivity Test') {
             steps {
