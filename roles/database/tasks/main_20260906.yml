@@ -23,7 +23,7 @@
   notify: Restart MySQL
 
 - name: Create application user
-  ansible.mysql.mysql_user:
+  community.mysql.mysql_user:
     name: "{{ mysql_user }}"
     plugin: caching_sha2_password
     plugin_auth_string: "{{ vault_mysql_password }}"
@@ -31,6 +31,7 @@
     host: "%"
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
+
 
 - name: Copy database dump
   ansible.builtin.copy:
@@ -46,7 +47,7 @@
   register: db_initialized
 
 - name: Import database dump
-  ansible.mysql.mysql_db:
+  community.mysql.mysql_db:
     name: "{{ mysql_database }}"
     state: import
     target: /tmp/dump.sql
