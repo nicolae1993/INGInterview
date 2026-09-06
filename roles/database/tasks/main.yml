@@ -28,7 +28,7 @@
     plugin: caching_sha2_password
     plugin_auth_string: "{{ vault_mysql_password }}"
     priv: "{{ mysql_database }}.*:ALL"
-    host: "%"
+    host: "%" # Permite conectarea userului de la orice host
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
 
