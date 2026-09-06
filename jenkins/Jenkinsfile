@@ -48,8 +48,31 @@ pipeline {
                                 webservers \
                                 -m ping \
                                 --vault-password-file "$WORKSPACE/.vault_pass"
+                        '''
+                    }
+                }
+            }
+        }
 
-                            rm -f "$WORKSPACE/.vault_pass"
+        stage('Deploy') {
+            steps {
+                sshagent(['ansible-ssh-key']) {
+                    withCredentials([
+                        string(
+                            credentialsId: 'ansible-vault-password',
+                            variable: 'VAULT_PASSWORD'
+                        )
+                    ]) {
+                        sh '''
+                            set +x
+
+                            printf '%s\\n' "$VAULT_PASSWORD" > "$WORKSPACE/.vault_pass"
+                            chmod 600 "$WORKSPACE/.vault_pass"
+
+                            ansible-playbook \
+                                -i jenkins/ansible/inventory.ini \
+                                jenkins/ansible/deploy.yml \
+                                --vault-password-file "$WORKSPACE/.vault_pass"
                         '''
                     }
                 }
@@ -75,8 +98,6 @@ pipeline {
                                 -i jenkins/ansible/inventory.ini \
                                 jenkins/ansible/health-check.yml \
                                 --vault-password-file "$WORKSPACE/.vault_pass"
-
-                            rm -f "$WORKSPACE/.vault_pass"
                         '''
                     }
                 }
@@ -92,11 +113,12 @@ pipeline {
         }
 
         success {
-            echo 'CI pipeline completed successfully.'
+            echo 'CI/CD pipeline completed successfully.'
         }
 
         failure {
-            echo 'CI pipeline failed.'
+            echo 'CI/CD pipeline failed.'
         }
     }
 }
+

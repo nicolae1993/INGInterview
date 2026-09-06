@@ -3,8 +3,15 @@
   hosts: webservers
   become: true
 
-  tasks:
+  vars_files:
+    - ../../group_vars/all.yml
+    - ../../group_vars/webservers.yml
+    - ../../group_vars/all/vault.yml
 
-    - name: Deploy application
-      ansible.builtin.debug:
-        msg: "Application deployment will be executed here"
+  vars:
+    application_source: "{{ playbook_dir }}/../../docker-project/"
+
+  roles:
+    - docker
+    - app
+
