@@ -8,6 +8,9 @@
     - ../group_vars/all/vault.yml
     - ../group_vars/webservers.yml
 
+  vars:
+    application_source: "{{ playbook_dir }}/../docker-project/"
+
   roles:
     - docker
     - app

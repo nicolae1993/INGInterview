@@ -10,6 +10,10 @@
   hosts: webservers
   become: true
 
+
+vars:
+    application_source: "{{ playbook_dir }}/../docker-project/"
+
   roles:
     - docker
     - app
