@@ -5,17 +5,31 @@ pipeline {
 
         stage('Ansible Syntax Check') {
             steps {
-                sh '''
-                    ansible-playbook \
-                        -i jenkins/ansible/inventory.ini \
-                        --syntax-check \
-                        jenkins/ansible/deploy.yml
+                withCredentials([
+                    string(
+                        credentialsId: 'ansible-vault-password',
+                        variable: 'VAULT_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        set +x
 
-                    ansible-playbook \
-                        -i jenkins/ansible/inventory.ini \
-                        --syntax-check \
-                        jenkins/ansible/health-check.yml
-                '''
+                        printf '%s\\n' "$VAULT_PASSWORD" > "$WORKSPACE/.vault_pass"
+                        chmod 600 "$WORKSPACE/.vault_pass"
+
+                        ansible-playbook \
+                            -i jenkins/ansible/inventory.ini \
+                            --syntax-check \
+                            --vault-password-file "$WORKSPACE/.vault_pass" \
+                            jenkins/ansible/deploy.yml
+
+                        ansible-playbook \
+                            -i jenkins/ansible/inventory.ini \
+                            --syntax-check \
+                            --vault-password-file "$WORKSPACE/.vault_pass" \
+                            jenkins/ansible/health-check.yml
+                    '''
+                }
             }
         }
 
@@ -121,4 +135,3 @@ pipeline {
         }
     }
 }
-
