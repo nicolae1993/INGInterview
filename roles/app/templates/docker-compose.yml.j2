@@ -6,9 +6,9 @@ services:
     volumes:
       - ./public:/var/www/html/
     
-  environment:
-      SERVER_NAME: "{{ inventory_hostname }}"
-      SERVER_IP: "{{ ansible_host }}"
+    environment:
+       SERVER_NAME: "{{ inventory_hostname }}"
+       SERVER_IP: "{{ ansible_host }}"
 
   apache:
     build: './apache/'
