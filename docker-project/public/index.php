@@ -39,12 +39,8 @@
                              </p>
 
                               <p>
-                                        Server Private IP: <?php echo file_get_contents('http://169.254.169.254/latest/meta-data/local-ipv4'); ?>
-                             </p>
-
-                              <p>
-                                            Server Public IP: <?php echo file_get_contents('http://169.254.169.254/latest/meta-data/public-ipv4'); ?> 
-                              </p>
+                                 Hello ING People
+                              <p>        
                         <a href="create.php" class="btn btn-success pull-right">Add New Employee</a>
                     </div>
                     <?php
