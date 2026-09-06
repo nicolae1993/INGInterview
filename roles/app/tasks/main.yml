@@ -9,7 +9,7 @@
 
 - name: Copy application
   ansible.builtin.copy:
-    src: "{{ application_source | default(playbook_dir + '/../docker-project/') }}"
+    src:  "{{ playbook_dir }}/../docker-project/"
     dest: "{{ app_directory }}/"
     owner: ubuntu
     group: ubuntu
